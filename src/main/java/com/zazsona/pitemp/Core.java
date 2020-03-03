@@ -7,6 +7,8 @@ public class Core extends JavaPlugin
     @Override
     public void onEnable()
     {
+        getConfig().options().copyDefaults(true);
+        saveConfig();
     }
 
     @Override

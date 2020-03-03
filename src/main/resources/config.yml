@@ -1,0 +1,7 @@
+Enabled: true
+WarningEnabled: true
+WarningTempCelsius: 70
+WarningMessage: 'The server temperature is high. It may shutdown soon.'
+ShutdownEnabled: true
+ShutdownTempCelsius: 76
+ShutdownMessage: 'The sever has exceeded temperature limits. It will now safely shutdown.'
