@@ -1,0 +1,5 @@
+name: PiTemp
+version: 1.0
+author: Zazsona
+main: com.zazsona.pitemp.Core
+api-version: 1.14
