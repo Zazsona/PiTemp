@@ -6,13 +6,13 @@ public class ConfigManager
 {
     private static Plugin plugin = Core.getPlugin(Core.class);
 
-    private static String ENABLED_TAG = "Enabled";
-    private static String WARNING_ENABLED_TAG = "WarningEnabled";
-    private static String WARNING_TEMPERATURE_TAG = "WarningTempCelsius";
-    private static String WARNING_MESSAGE_TAG = "WarningMessage";
-    private static String SHUTDOWN_ENABLED_TAG = "ShutdownEnabled";
-    private static String SHUTDOWN_TEMPERATURE_TAG = "ShutdownTempCelsius";
-    private static String SHUTDOWN_MESSAGE_TAG = "ShutdownMessage";
+    private static final String ENABLED_TAG = "Enabled";
+    private static final String WARNING_ENABLED_TAG = "WarningEnabled";
+    private static final String WARNING_TEMPERATURE_TAG = "WarningTempCelsius";
+    private static final String WARNING_MESSAGE_TAG = "WarningMessage";
+    private static final String SHUTDOWN_ENABLED_TAG = "ShutdownEnabled";
+    private static final String SHUTDOWN_TEMPERATURE_TAG = "ShutdownTempCelsius";
+    private static final String SHUTDOWN_MESSAGE_TAG = "ShutdownMessage";
 
     public static void save()
     {
