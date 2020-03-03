@@ -3,3 +3,10 @@ version: 1.0
 author: Zazsona
 main: com.zazsona.pitemp.Core
 api-version: 1.14
+commands:
+  PiTemp:
+    description: Configure PiTemp
+permissions:
+  PiTemp.Config:
+    description: Configure PiTemp
+    default: op

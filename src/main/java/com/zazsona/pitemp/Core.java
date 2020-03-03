@@ -9,6 +9,7 @@ public class Core extends JavaPlugin
     {
         getConfig().options().copyDefaults(true);
         saveConfig();
+        this.getCommand("PiTemp").setExecutor(new ConfigCommand());
     }
 
     @Override
