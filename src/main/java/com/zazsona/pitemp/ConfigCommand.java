@@ -5,6 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import java.io.IOException;
+
 public class ConfigCommand implements CommandExecutor
 {
     @Override
@@ -15,9 +17,14 @@ public class ConfigCommand implements CommandExecutor
             if (args.length == 0)
             {
                 sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+
+                                           "/PiTemp Check\n"+
                                            "/PiTemp [Enable | Disable]\n"+
                                            "/PiTemp Warning [Enable | Disable | Temp | Message] (Value)\n" +
                                            "/PiTemp Shutdown [Enable | Disable | Temp | Message] (Value)\n");
+            }
+            else if (args[0].equalsIgnoreCase("check"))
+            {
+                checkTemperature(sender);
             }
             else if (args[0].equalsIgnoreCase("warning"))
             {
@@ -36,6 +43,27 @@ public class ConfigCommand implements CommandExecutor
             }
         }
         return false;
+    }
+
+    private void checkTemperature(CommandSender sender)
+    {
+        try
+        {
+            int temp = TemperatureMonitor.getTemperature();
+            int warningTemp = ConfigManager.getWarningTemperature();
+            ChatColor tempColor = ChatColor.GREEN;
+            if (temp >= warningTemp-10 && temp < warningTemp)
+                tempColor = ChatColor.GOLD;
+            if (temp >= warningTemp)
+                tempColor = ChatColor.RED;
+
+            sender.sendMessage("The system is currently at "+tempColor+temp+"*C");
+        }
+        catch (IOException e)
+        {
+            sender.sendMessage(ChatColor.RED+"This plugin does not support the operating system.");
+        }
+
     }
 
     private void setPluginEnabled(CommandSender sender, boolean enable)

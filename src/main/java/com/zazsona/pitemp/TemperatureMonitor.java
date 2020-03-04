@@ -18,12 +18,7 @@ public class TemperatureMonitor extends TimerTask
     {
         try
         {
-            File tempFile = new File("/sys/class/thermal/thermal_zone0/temp");
-            if (!tempFile.exists())
-                throw new IOException();
-            String tempFileContents = new String(Files.readAllBytes(tempFile.toPath()));
-            int temper = (Integer.parseInt(tempFileContents)/1000);
-
+            int temper = getTemperature();
             if (temper >= ConfigManager.getShutdownTemperature())
             {
                 try
@@ -46,6 +41,16 @@ public class TemperatureMonitor extends TimerTask
         catch (IOException | NumberFormatException e)
         {
             Bukkit.getLogger().info("This Linux distro does not have a valid temperature file.");
+            e.printStackTrace();
         }
+    }
+
+    public static int getTemperature() throws IOException
+    {
+        File tempFile = new File("/sys/class/thermal/thermal_zone0/temp");
+        if (!tempFile.exists())
+            throw new IOException();
+        String tempFileContents = new String(Files.readAllBytes(tempFile.toPath())).replaceAll("[^0-9a-zA-Z]", "");
+        return (Math.round(Integer.parseInt(tempFileContents)/1000.0f));
     }
 }
