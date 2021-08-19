@@ -36,6 +36,7 @@ public class Core extends JavaPlugin
 
     private void startTemperatureActionTimer()
     {
+        int startupDelaySeconds = ConfigManager.getStartupCheckDelay();
         temperatureActionTimer = new Timer();
         temperatureActionTimer.scheduleAtFixedRate(new TimerTask()
         {
@@ -51,7 +52,7 @@ public class Core extends JavaPlugin
                     Bukkit.getLogger().log(Level.SEVERE, String.format("[%s] Failed to enact temperature action: %s", PLUGIN_NAME, e.getLocalizedMessage()));
                 }
             }
-        }, 1000 * 15, 1000 * 15);
+        }, 1000 * startupDelaySeconds, 1000 * 15);
     }
 
     @Override

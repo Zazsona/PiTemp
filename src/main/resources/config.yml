@@ -5,3 +5,4 @@ WarningMessage: 'The server has reached a high temperature. It may shutdown soon
 ShutdownEnabled: true
 ShutdownTempCelsius: 80
 ShutdownMessage: 'The server has exceeded temperature limits. It will now save and shutdown.'
+StartupCheckDelayInSeconds: 60

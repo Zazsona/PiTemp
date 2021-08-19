@@ -13,6 +13,7 @@ public class ConfigManager
     private static final String SHUTDOWN_ENABLED_TAG = "ShutdownEnabled";
     private static final String SHUTDOWN_TEMPERATURE_TAG = "ShutdownTempCelsius";
     private static final String SHUTDOWN_MESSAGE_TAG = "ShutdownMessage";
+    private static final String STARTUP_CHECK_DELAY_TAG = "StartupCheckDelayInSeconds";
 
     public static void save()
     {
@@ -94,5 +95,16 @@ public class ConfigManager
     public static String getShutdownMessage()
     {
         return (String) plugin.getConfig().get(SHUTDOWN_MESSAGE_TAG);
+    }
+
+    public static void setStartupDelay(int seconds)
+    {
+        plugin.getConfig().set(STARTUP_CHECK_DELAY_TAG, seconds);
+        save();
+    }
+
+    public static int getStartupCheckDelay()
+    {
+        return (int) plugin.getConfig().get(STARTUP_CHECK_DELAY_TAG);
     }
 }
