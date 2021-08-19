@@ -25,7 +25,7 @@ public class TemperatureMonitor
         {
             try
             {
-                Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getShutdownMessage());
+                Bukkit.getServer().broadcastMessage(ChatColor.RED + "" + ChatColor.BOLD + String.format("[%s] %s", Core.PLUGIN_NAME, ConfigManager.getShutdownMessage()));
                 Thread.sleep(8000);
                 Bukkit.getServer().shutdown();
             }
@@ -37,7 +37,7 @@ public class TemperatureMonitor
         else if (celsius >= ConfigManager.getWarningTemperature() && ((Instant.now().getEpochSecond() - lastWarningSec) > 60*15))
         {
             lastWarningSec = Instant.now().getEpochSecond();
-            Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getWarningMessage());
+            Bukkit.getServer().broadcastMessage(ChatColor.GOLD + String.format("[%s] %s", Core.PLUGIN_NAME, ConfigManager.getWarningMessage()));
         }
     }
 

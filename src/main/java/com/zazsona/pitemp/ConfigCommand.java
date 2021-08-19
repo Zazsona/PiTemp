@@ -18,11 +18,12 @@ public class ConfigCommand implements CommandExecutor
         {
             if (args.length == 0)
             {
-                sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+
-                                           "/PiTemp Check\n"+
-                                           "/PiTemp [Enable | Disable]\n"+
-                                           "/PiTemp Warning [Enable | Disable | Temperature | Message] (Value)\n" +
-                                           "/PiTemp Shutdown [Enable | Disable | Temperature | Message] (Value)\n");
+                String helpBody =  "/PiTemp Check\n"+
+                        "/PiTemp [Enable | Disable]\n"+
+                        "/PiTemp Warning [Enable | Disable | Temp | Message] (Value)\n" +
+                        "/PiTemp Shutdown [Enable | Disable | Temp | Message] (Value)\n";
+                String page = addHeader(Core.PLUGIN_NAME, helpBody);
+                sender.sendMessage(page);
             }
             else if (args[0].equalsIgnoreCase("check"))
             {
@@ -59,20 +60,19 @@ public class ConfigCommand implements CommandExecutor
             if (temp >= warningTemp)
                 tempColor = ChatColor.RED;
 
-            sender.sendMessage("The system is currently at "+tempColor+temp+"*C");
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + "The system is currently at "+tempColor+temp+"*C"));
         }
         catch (IOException e)
         {
-            sender.sendMessage(ChatColor.RED + String.format("Could not get temperature: %s", e.getLocalizedMessage()));
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.RED + String.format("Could not get temperature: %s", e.getLocalizedMessage())));
         }
-
     }
 
     private void setPluginEnabled(CommandSender sender, boolean enable)
     {
         ConfigManager.setEnabled(enable);
         String state = ((enable) ? ChatColor.GREEN+"enabled" : ChatColor.RED+"disabled");
-        sender.sendMessage(ChatColor.WHITE + String.format("%s is now %s.", Core.PLUGIN_NAME, state));
+        sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + String.format("%s is now %s.", Core.PLUGIN_NAME, state)));
     }
 
     private void parseConfigSelection(String[] args, CommandSender sender, boolean isShutdown)
@@ -115,7 +115,7 @@ public class ConfigCommand implements CommandExecutor
             ConfigManager.setWarningEnabled(enable);
 
         String state = ((enable) ? ChatColor.GREEN+"enabled" : ChatColor.RED+"disabled");
-        sender.sendMessage(ChatColor.WHITE + String.format("%s is now %s.", context, state));
+        sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + String.format("%s is now %s.", context, state)));
     }
 
     private void setTemperature(CommandSender sender, boolean isShutdown, String[] args)
@@ -129,10 +129,10 @@ public class ConfigCommand implements CommandExecutor
                 ConfigManager.setWarningTemperature(celsius);
 
             String context = (isShutdown) ? "Shutdown" : "Warning";
-            sender.sendMessage(ChatColor.WHITE + context + " set to " + ChatColor.BLUE+celsius+"*C");
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + context + " set to " + ChatColor.BLUE+celsius+"*C"));
         }
         else
-            sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+"No celsius value was specified.");
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + "No celsius value was specified."));
     }
 
     private void setMessage(CommandSender sender, boolean isShutdown, String[] args)
@@ -150,20 +150,31 @@ public class ConfigCommand implements CommandExecutor
                 ConfigManager.setWarningMessage(message);
 
             String context = (isShutdown) ? "Shutdown" : "Warning";
-            sender.sendMessage(ChatColor.WHITE+context+" message set to:\n"+ChatColor.BLUE+message);
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + context + " message set to:\n" + ChatColor.BLUE + message));
         }
         else
-            sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+"No message was specified.");
+            sender.sendMessage(addHeader(Core.PLUGIN_NAME, ChatColor.WHITE + "No message was specified."));
     }
 
     private void sendInstructions(CommandSender sender, boolean isShutdown)
     {
         String context = (isShutdown) ? "Shutdown" : "Warning";
-        sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+
-                "/PiTemp "+context+" Enable - Enables "+context+"s\n" +
+        String pageBody = "/PiTemp "+context+" Enable - Enables "+context+"s\n" +
                 "/PiTemp "+context+" Disable - Disables "+context+"s\n" +
-                "/PiTemp "+context+" Temperature - Set activation temperature (Celsius)\n" +
-                "/PiTemp "+context+" Message - Message to send on activation.");
+                "/PiTemp "+context+" Temp - Set activation temperature (Celsius)\n" +
+                "/PiTemp "+context+" Message - Message to send on activation.";
+        String page = addHeader(Core.PLUGIN_NAME, pageBody);
+        sender.sendMessage(page);
+    }
 
+    public static String addHeader(String headerText, String content)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ChatColor.YELLOW).append("---------");
+        sb.append(ChatColor.WHITE).append(" ").append(headerText).append(" ");
+        sb.append(ChatColor.YELLOW).append("--------------------");
+        sb.append(ChatColor.WHITE).append("\n");
+        sb.append(content);
+        return sb.toString();
     }
 }
