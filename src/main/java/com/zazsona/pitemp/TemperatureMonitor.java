@@ -9,48 +9,55 @@ import java.nio.file.Files;
 import java.time.Instant;
 import java.util.TimerTask;
 
-public class TemperatureMonitor extends TimerTask
+public class TemperatureMonitor
 {
-    private long lastWarningSec = 0;
+    private static long lastWarningSec = 0;
 
-    @Override
-    public void run()
+    public static void performTemperatureControlAction() throws IOException
     {
-        try
+        int cel = getTemperatureCelsius();
+        performTemperatureControlAction(cel);
+    }
+
+    public static void performTemperatureControlAction(int celsius) throws IOException
+    {
+        if (celsius >= ConfigManager.getShutdownTemperature())
         {
-            int temper = getTemperature();
-            if (temper >= ConfigManager.getShutdownTemperature())
+            try
             {
-                try
-                {
-                    Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getShutdownMessage());
-                    Thread.sleep(8000);
-                    Bukkit.getServer().shutdown();
-                }
-                catch (InterruptedException e)
-                {
-                    Bukkit.getServer().shutdown();
-                }
+                Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getShutdownMessage());
+                Thread.sleep(8000);
+                Bukkit.getServer().shutdown();
             }
-            else if (temper >= ConfigManager.getWarningTemperature() && Instant.now().getEpochSecond()-lastWarningSec > 60*15)
+            catch (InterruptedException e)
             {
-                lastWarningSec = Instant.now().getEpochSecond();
-                Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getWarningMessage());
+                Bukkit.getServer().shutdown();
             }
         }
-        catch (IOException | NumberFormatException e)
+        else if (celsius >= ConfigManager.getWarningTemperature() && ((Instant.now().getEpochSecond() - lastWarningSec) > 60*15))
         {
-            Bukkit.getLogger().info("This Linux distro does not have a valid temperature file.");
-            e.printStackTrace();
+            lastWarningSec = Instant.now().getEpochSecond();
+            Bukkit.getServer().broadcastMessage(ChatColor.LIGHT_PURPLE+ConfigManager.getWarningMessage());
         }
     }
 
-    public static int getTemperature() throws IOException
+
+
+    public static int getTemperatureCelsius() throws IOException
     {
-        File tempFile = new File("/sys/class/thermal/thermal_zone0/temp");
-        if (!tempFile.exists())
-            throw new IOException();
-        String tempFileContents = new String(Files.readAllBytes(tempFile.toPath())).replaceAll("[^0-9a-zA-Z]", "");
-        return (Math.round(Integer.parseInt(tempFileContents)/1000.0f));
+        try
+        {
+            File tempFile = new File("/sys/class/thermal/thermal_zone0/temp");
+            if (!tempFile.exists())
+                throw new IOException("Temperature file does not exist.");
+            String tempFileContents = new String(Files.readAllBytes(tempFile.toPath())).replaceAll("[^0-9a-zA-Z]", "");
+            int temperatureValue = Integer.parseInt(tempFileContents);
+            int celsius = Math.round(temperatureValue / 1000.0f);
+            return celsius;
+        }
+        catch (NumberFormatException e)
+        {
+            throw new IOException("Invalid temperature data.");
+        }
     }
 }

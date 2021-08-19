@@ -1,7 +1,7 @@
 Enabled: true
 WarningEnabled: true
 WarningTempCelsius: 78
-WarningMessage: 'The server temperature is high. It may shutdown soon.'
+WarningMessage: 'The server has reached a high temperature. It may shutdown soon.'
 ShutdownEnabled: true
 ShutdownTempCelsius: 80
-ShutdownMessage: 'The server has exceeded temperature limits. It will now safely shutdown.'
+ShutdownMessage: 'The server has exceeded temperature limits. It will now save and shutdown.'

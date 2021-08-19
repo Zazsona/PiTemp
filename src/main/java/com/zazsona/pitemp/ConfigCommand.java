@@ -1,11 +1,13 @@
 package com.zazsona.pitemp;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
 public class ConfigCommand implements CommandExecutor
 {
@@ -19,8 +21,8 @@ public class ConfigCommand implements CommandExecutor
                 sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+
                                            "/PiTemp Check\n"+
                                            "/PiTemp [Enable | Disable]\n"+
-                                           "/PiTemp Warning [Enable | Disable | Temp | Message] (Value)\n" +
-                                           "/PiTemp Shutdown [Enable | Disable | Temp | Message] (Value)\n");
+                                           "/PiTemp Warning [Enable | Disable | Temperature | Message] (Value)\n" +
+                                           "/PiTemp Shutdown [Enable | Disable | Temperature | Message] (Value)\n");
             }
             else if (args[0].equalsIgnoreCase("check"))
             {
@@ -49,10 +51,10 @@ public class ConfigCommand implements CommandExecutor
     {
         try
         {
-            int temp = TemperatureMonitor.getTemperature();
+            int temp = TemperatureMonitor.getTemperatureCelsius();
             int warningTemp = ConfigManager.getWarningTemperature();
             ChatColor tempColor = ChatColor.GREEN;
-            if (temp >= warningTemp-10 && temp < warningTemp)
+            if (temp >= warningTemp - 10 && temp < warningTemp)
                 tempColor = ChatColor.GOLD;
             if (temp >= warningTemp)
                 tempColor = ChatColor.RED;
@@ -61,7 +63,7 @@ public class ConfigCommand implements CommandExecutor
         }
         catch (IOException e)
         {
-            sender.sendMessage(ChatColor.RED+"This plugin does not support the operating system.");
+            sender.sendMessage(ChatColor.RED + String.format("Could not get temperature: %s", e.getLocalizedMessage()));
         }
 
     }
@@ -69,7 +71,8 @@ public class ConfigCommand implements CommandExecutor
     private void setPluginEnabled(CommandSender sender, boolean enable)
     {
         ConfigManager.setEnabled(enable);
-        sender.sendMessage(ChatColor.WHITE+"PiTemp is now "+((enable) ? ChatColor.GREEN+"enabled." : ChatColor.RED+"disabled."));
+        String state = ((enable) ? ChatColor.GREEN+"enabled" : ChatColor.RED+"disabled");
+        sender.sendMessage(ChatColor.WHITE + String.format("%s is now %s.", Core.PLUGIN_NAME, state));
     }
 
     private void parseConfigSelection(String[] args, CommandSender sender, boolean isShutdown)
@@ -88,6 +91,7 @@ public class ConfigCommand implements CommandExecutor
                     break;
                 case "TEMP":
                 case "TEMPERATURE":
+                case "CELSIUS":
                     setTemperature(sender, isShutdown, args);
                     break;
                 case "MESSAGE":
@@ -110,7 +114,8 @@ public class ConfigCommand implements CommandExecutor
         else
             ConfigManager.setWarningEnabled(enable);
 
-        sender.sendMessage(ChatColor.WHITE+context+" set to "+((enable) ? ChatColor.GREEN+"enabled." : ChatColor.RED+"disabled."));
+        String state = ((enable) ? ChatColor.GREEN+"enabled" : ChatColor.RED+"disabled");
+        sender.sendMessage(ChatColor.WHITE + String.format("%s is now %s.", context, state));
     }
 
     private void setTemperature(CommandSender sender, boolean isShutdown, String[] args)
@@ -124,7 +129,7 @@ public class ConfigCommand implements CommandExecutor
                 ConfigManager.setWarningTemperature(celsius);
 
             String context = (isShutdown) ? "Shutdown" : "Warning";
-            sender.sendMessage(ChatColor.WHITE+context+" set to "+ChatColor.BLUE+celsius+"*C");
+            sender.sendMessage(ChatColor.WHITE + context + " set to " + ChatColor.BLUE+celsius+"*C");
         }
         else
             sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+"No celsius value was specified.");
@@ -156,8 +161,8 @@ public class ConfigCommand implements CommandExecutor
         String context = (isShutdown) ? "Shutdown" : "Warning";
         sender.sendMessage(ChatColor.YELLOW+"===== PITEMP CONFIG =====\n"+ChatColor.WHITE+
                 "/PiTemp "+context+" Enable - Enables "+context+"s\n" +
-                "/PiTemp "+context+" Disable - Disabled "+context+"s\n" +
-                "/PiTemp "+context+" Temp - Set activation temperature (Celsius)\n" +
+                "/PiTemp "+context+" Disable - Disables "+context+"s\n" +
+                "/PiTemp "+context+" Temperature - Set activation temperature (Celsius)\n" +
                 "/PiTemp "+context+" Message - Message to send on activation.");
 
     }
