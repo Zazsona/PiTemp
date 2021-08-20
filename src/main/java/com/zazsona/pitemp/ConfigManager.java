@@ -14,6 +14,7 @@ public class ConfigManager
     private static final String SHUTDOWN_TEMPERATURE_TAG = "ShutdownTempCelsius";
     private static final String SHUTDOWN_MESSAGE_TAG = "ShutdownMessage";
     private static final String STARTUP_CHECK_DELAY_TAG = "StartupCheckDelayInSeconds";
+    private static final String TEMPERATURE_FILE_PATH_TAG = "TemperatureFilePath";
 
     public static void save()
     {
@@ -106,5 +107,16 @@ public class ConfigManager
     public static int getStartupCheckDelay()
     {
         return (int) plugin.getConfig().get(STARTUP_CHECK_DELAY_TAG);
+    }
+
+    public static void setTemperatureFilePath(String path)
+    {
+        plugin.getConfig().set(TEMPERATURE_FILE_PATH_TAG, path);
+        save();
+    }
+
+    public static String getTemperatureFilePath()
+    {
+        return (String) plugin.getConfig().get(TEMPERATURE_FILE_PATH_TAG);
     }
 }

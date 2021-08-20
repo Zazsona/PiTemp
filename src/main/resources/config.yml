@@ -6,3 +6,4 @@ ShutdownEnabled: true
 ShutdownTempCelsius: 80
 ShutdownMessage: 'The server has exceeded temperature limits. It will now save and shutdown.'
 StartupCheckDelayInSeconds: 60
+TemperatureFilePath: '/sys/class/thermal/thermal_zone0/temp'

@@ -47,7 +47,8 @@ public class TemperatureMonitor
     {
         try
         {
-            File tempFile = new File("/sys/class/thermal/thermal_zone0/temp");
+            String filePath = ConfigManager.getTemperatureFilePath();
+            File tempFile = new File(filePath);
             if (!tempFile.exists())
                 throw new IOException("Temperature file does not exist.");
             String tempFileContents = new String(Files.readAllBytes(tempFile.toPath())).replaceAll("[^0-9a-zA-Z]", "");
